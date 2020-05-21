@@ -1,5 +1,5 @@
 # Ace Editor Scrollbars
-CSS Scrollbars for Ace Editor
+CSS Scrollbars for [Ace Editor](https://github.com/ajaxorg/ace)
 
 Simple to use CSS styled scrollbars:
 
