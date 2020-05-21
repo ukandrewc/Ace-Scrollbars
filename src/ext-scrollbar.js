@@ -81,26 +81,35 @@ function AceScrollbars(e) {
 	})
 
 	th.previousElementSibling.addEventListener("mousedown", function (e) {
-		hs.scrollTop = e.clientX / yScale
+		hs.scrollTop = e.clientX / hScale
 	})
 
 	resizeScroll = function () {
 		if (vs.clientHeight) {
 			vScale = vs.clientHeight / vs.scrollHeight
 			tv.style.height = (vs.clientHeight * vScale) + "px"
+			showScroll(tv, true)
 		}
 		else {
-			tv.style.height = 0
+			showScroll(tv, false)
 		}
 		if (hs.clientWidth) {
 			hScale = hs.clientWidth / hs.scrollWidth
 			th.style.width = (hs.clientWidth * hScale) + "px"
 			th.style.left = (hs.scrollLeft * hScale) + gutter + "px"
+			showScroll(th, true)
 		}
 		else {
-			th.style.width = 0
+			showScroll(th, false)
 		}
 		gutter = e.container.getElementsByClassName("ace_gutter")[0].clientWidth
 		th.previousElementSibling.style.left = gutter + "px"
+	}
+
+	showScroll = function (e, s) {
+		d = (s) ? "" : "none"
+		e.style.display = d
+		e.previousElementSibling.style.display = d
+
 	}
 }
