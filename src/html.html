@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<style type="text/css" media="screen">
+		body {
+			overflow: hidden;
+		}
+
+		#editor {
+			margin: 0;
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="src-min/ext-scrollbar.css">
+</head>
+
+<body>
+	<pre id="editor"></pre>
+	<script src="src-min/ace.js"></script>
+	<script src="src-min/ext-language_tools.js"></script>
+	<script src="src-min/ext-beautify.js"></script>
+	<script src="src-min/ext-emmet.js"></script>
+	<script src="src-min/ext-scrollbar.js"></script>
+	<script>
+		var beauty = ace.require("ace/ext/beautify")
+		var editor = ace.edit("editor")
+
+		ace.require("ace/ext/language_tools")
+		ace.require("ace/ext/emmet")
+		editor.setTheme("ace/theme/dreamweaver")
+		editor.session.setMode("ace/mode/html")
+
+		editor.setOptions({
+			enableBasicAutocompletion: true,
+			enableLiveAutocompletion: true,
+			enableSnippets: true,
+			enableEmmet: true,
+			fixedWidthGutter: true,
+			showFoldWidgets: false,
+			displayIndentGuides: false,
+			printMargin: false,
+			fontFamily: 'source code pro',
+			tabSize: 2
+		})
+
+		new AceScrollbars(editor)
+
+		function indentCode() {
+			let p = editor.selection.getCursor()
+			beauty.beautify(editor.session)
+			editor.selection.moveToPosition(p)
+		}
+
+		function loadSource() {
+			editor.setValue(name)
+			beauty.beautify(editor.session)
+			editor.navigateFileStart()
+			editor.focus()
+		}
+
+		function saveSource() {
+			indentCode()
+			getSource()
+		}
+
+		function getSource() {
+			name = editor.getValue()
+		}
+
+	</script>
+</body>
+
+</html>
