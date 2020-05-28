@@ -15,3 +15,6 @@ Just link to two files then initialise the scrollbars after initialising Ace.
     new AceScrollbars(editor)
     ...
     </script>
+### Added search/occurance map
+
+<img src="./screenshot.png">
