@@ -3,9 +3,11 @@ function AceScrollbars(e) {
 	// Add CSS scrollbars
 	e.container.insertAdjacentHTML("beforeend", "<div id='ace_pre-v' class='ace_scroll-v'></div><div id='ace_bar-v' class='ace_scroll-v ace_thumb-v'></div>")
 	e.container.insertAdjacentHTML("beforeend", "<div id='ace_pre-h' class='ace_scroll-h'></div><div id='ace_bar-h' class='ace_scroll-h ace_thumb-h'></div>")
+	e.container.insertAdjacentHTML("beforeend", "<div id='ace_map-row' class='ace_map-row'></div>")
+	e.container.insertAdjacentHTML("beforeend", "<div id='ace_map'></div>")
 
 	// Ace scrollbars
-	let gutter = 34
+	let gWidth = 34
 	let sc = document.getElementsByClassName("ace_scrollbar")
 
 	let ro = new MutationObserver(function () {
@@ -13,12 +15,46 @@ function AceScrollbars(e) {
 	})
 
 	// Resize
+	window.addEventListener("resize", function () {
+		resizeScroll()
+	})
+
 	ro.observe(e.container, { characterData: true })
 	for (s of sc) {
 		ro.observe(s.firstElementChild, { attributes: true })
 	}
 
+	// Map
+	let mr = document.getElementById("ace_map-row")
+	let mc = document.getElementById("ace_map")
+
+	let h = 0
+	e.on("changeSelection", function () {
+		clearTimeout(h)
+		h = setTimeout(showMapItems, 250)
+	})
+
+	showMapItems = function () {
+		let ht = ""
+		let tx = e.getCopyText()
+		if (tx != "") {
+			let op = e.getLastSearchOptions()
+			op.needle = e.getCopyText()
+			e.$search.setOptions(op)
+			let lr = -1
+			for (r of e.$search.findAll(e.session)) {
+				if (r.start.row != lr) {
+					ht += "<div class='ace_map-item' style='top:" + (r.start.row * rScale) + "px'></div>"
+					lr = r.start.row
+				}
+			}
+		}
+		mc.innerHTML = ht
+		mr.style.top = e.getCursorPosition().row * rScale + "px"
+	}
+
 	// Vertical
+	let rScale = 1
 	let vScale = 1
 	let vStart = -1
 
@@ -59,7 +95,7 @@ function AceScrollbars(e) {
 	let th = document.getElementById("ace_bar-h")
 
 	hs.addEventListener("scroll", function () {
-		th.style.left = (hs.scrollLeft * hScale) + gutter + "px"
+		th.style.left = (hs.scrollLeft * hScale) + gWidth + "px"
 	})
 
 	// Drag events
@@ -81,35 +117,38 @@ function AceScrollbars(e) {
 	})
 
 	th.previousElementSibling.addEventListener("mousedown", function (e) {
-		hs.scrollTop = e.clientX / hScale
+		hs.scrollLeft = e.clientX / hScale
 	})
 
 	resizeScroll = function () {
+		vScale = vs.clientHeight / vs.scrollHeight
 		if (vs.clientHeight) {
-			vScale = vs.clientHeight / vs.scrollHeight
 			tv.style.height = (vs.clientHeight * vScale) + "px"
 			showScroll(tv, true)
 		}
 		else {
 			showScroll(tv, false)
 		}
+
+		hScale = hs.clientWidth / hs.scrollWidth
 		if (hs.clientWidth) {
-			hScale = hs.clientWidth / hs.scrollWidth
 			th.style.width = (hs.clientWidth * hScale) + "px"
-			th.style.left = (hs.scrollLeft * hScale) + gutter + "px"
+			th.style.left = (hs.scrollLeft * hScale) + gWidth + "px"
 			showScroll(th, true)
 		}
 		else {
 			showScroll(th, false)
 		}
-		gutter = e.container.getElementsByClassName("ace_gutter")[0].clientWidth
-		th.previousElementSibling.style.left = gutter + "px"
+
+		rScale = e.renderer.lineHeight * vScale
+		gWidth = e.renderer.gutterWidth
+		th.previousElementSibling.style.left = gWidth + "px"
+		showMapItems()
 	}
 
 	showScroll = function (e, s) {
 		d = (s) ? "" : "none"
 		e.style.display = d
 		e.previousElementSibling.style.display = d
-
 	}
 }

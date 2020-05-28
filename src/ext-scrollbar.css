@@ -13,7 +13,7 @@
 }
 
 .ace_thumb-v {
-	background: gainsboro
+	background: gainsboro;
 }
 
 .ace_scroll-h {
@@ -28,4 +28,25 @@
 
 .ace_thumb-h {
 	background: gainsboro
+}
+
+.ace_map-row {
+	z-index: 1001;
+	position: absolute;
+	pointer-events: none;
+	top: 0;
+	right: 0;
+	width: 12px;
+	height: 4px;
+	background: grey;
+}
+
+.ace_map-item {
+	z-index: 1002;
+	position: absolute;
+	pointer-events: none;
+	right: 4px;
+	width: 4px;
+	height: 4px;
+	background: cornflowerblue
 }
